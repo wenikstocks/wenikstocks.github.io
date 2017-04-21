@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+var stocksArr = [
+	"532488,Divis Lab",	"524715,Sun Pharma", "532300,Wockhardt",
+	"532276,Syndicate", "532174,ICICI", "500112,SBI",
+	"500209,Infosys", "530965,IOC", "500312,ONGC",
+	"500325,Reliance Ind","532617,Jet Airways","500410,ACC"
+];
+
+var loadval;
+var ref;
+function reloadValues(){
+	var numValidation = /[1-9][0-9]*/;
+	var txtIntervalVal = document.getElementById('txtInterval').value;
+	var ctr=10;
+	
+	if(!numValidation.test(txtIntervalVal)){
+		txtIntervalVal = 10;
+	}
+	ctr = txtIntervalVal;
+	document.getElementById('btnStart').disabled = true;
+	clearInterval(ref);
+	ref = setInterval(function() {
+			ctr--;
+			document.getElementById("tdRefreshId").innerHTML = '&nbsp;&nbsp;Updating in '+ctr+' second';
+
+			if (ctr < 1) {
+				clearInterval(ref);
+				document.getElementById("tdRefreshId").innerHTML = '&nbsp;&nbsp;Now Updating';
+				ctr=txtIntervalVal;
+			}
+		}
+	, 1000);
+	
+	loadval = setTimeout(reloadValues, 1000 * txtIntervalVal);
+	
+	var inputElements = document.getElementsByName('chkbx');
+	for(var i=0; inputElements[i]; ++i){
+		if(inputElements[i].checked){
+			document.getElementById('frameid'+i).src = document.getElementById('frameid'+i).src;
+		}
+	}
+}
+
+function stopReload(){
+	clearTimeout(loadval);
+	clearInterval(ref);
+	document.getElementById("tdRefreshId").innerHTML = '';
+	document.getElementById('btnStart').disabled = false;
+}
+
+function checkboxClicked(idx){
+	if(document.getElementById('chk'+idx)!=null && document.getElementById('chk'+idx).checked){
+		if(document.getElementById('name_tdid'+idx)!=null){
+			document.getElementById('name_tdid'+idx).className = 'stocknameSelected';
+		}
+	}
+	else{
+		if(document.getElementById('name_tdid'+idx)!=null){
+			document.getElementById('name_tdid'+idx).className = 'stockname';
+		}
+	}
+}
+
+function loadStocks(){
+	var quotesURL = 'http://www.bseindia.com/stock-share-price/SiteCache/IrBackupStockReach.aspx?scripcode=#CODE#&DebtFlag=C';
+	var l=0;
+	for(var i=0;i<stocksArr.length;i++){
+		var stock = stocksArr[i].split(',');
+		//alert(i + '-->' + stock[0] + ' - ' + stock[1]);
+		var table = document.getElementById("tblStocks");
+
+		// Create an empty <tr> element and add it to the 1st position of the table:
+		var row = table.insertRow(l);
+
+		// Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		var cell7 = row.insertCell(6);
+		var cell8 = row.insertCell(7);
+		var cell9 = row.insertCell(8);
+		
+		cell1.className='stockname';
+		cell2.className='stockvalue';
+		cell3.className='emptycell';
+		cell4.className='stockname';
+		cell5.className='stockvalue';
+		cell6.className='emptycell';
+		cell7.className='stockname';
+		cell8.className='stockvalue';
+		cell9.className='emptycell';
+		
+		cell1.innerHTML = '<input style="float: left;" id="chk'+i+'" type="checkbox" value="'+i+'" name="chkbx" onclick="checkboxClicked('+i+');">'+stock[1];
+		cell2.innerHTML = '<iframe id="frameid'+i+'" width="225" height="40" scrolling="no" frameborder="0" src="http://www.bseindia.com/stock-share-price/SiteCache/IrBackupStockReach.aspx?scripcode='+stock[0]+'&DebtFlag=C"></iframe>';
+		cell3.innerHTML = '&nbsp;';
+		
+		cell1.id = 'name_tdid'+i;
+		cell2.id = 'value_tdid'+i;
+		
+		i++;
+		if(i<stocksArr.length){
+			stock = stocksArr[i].split(',');
+			cell4.innerHTML = '<input style="float: left;" id="chk'+i+'" type="checkbox" value="'+i+'" name="chkbx" onclick="checkboxClicked('+i+');">'+stock[1];
+			cell5.innerHTML = '<iframe id="frameid'+i+'" width="225" height="40" scrolling="no" frameborder="0" src="http://www.bseindia.com/stock-share-price/SiteCache/IrBackupStockReach.aspx?scripcode='+stock[0]+'&DebtFlag=C"></iframe>';
+			cell4.id = 'name_tdid'+i;
+			cell5.id = 'value_tdid'+i;
+		}
+		else{
+			cell4.innerHTML = '';
+			cell5.innerHTML = '';
+		}
+		cell6.innerHTML = '&nbsp;';
+		
+		i++;
+		if(i<stocksArr.length){
+			stock = stocksArr[i].split(',');
+			cell7.innerHTML = '<input style="float: left;" id="chk'+i+'" type="checkbox" value="'+i+'" name="chkbx" onclick="checkboxClicked('+i+');">'+stock[1];
+			cell8.innerHTML = '<iframe id="frameid'+i+'" width="225" height="40" scrolling="no" frameborder="0" src="http://www.bseindia.com/stock-share-price/SiteCache/IrBackupStockReach.aspx?scripcode='+stock[0]+'&DebtFlag=C"></iframe>';
+			cell7.id = 'name_tdid'+i;
+			cell8.id = 'value_tdid'+i;
+		}
+		else{
+			cell7.innerHTML = '';
+			cell8.innerHTML = '';
+		}
+		cell9.innerHTML = '&nbsp;';
+		
+		l++;
+	}
+	
+	
+	
+}
+
+
+
+
+</script>
+
+<style>
+.stockname{
+	padding-top: 11px;
+	padding-right: 10px;
+	width: 12%;
+	text-align: right;
+	background-color: #e6ff5c;
+	border: 1px solid #d0d0d0;
+	font-size: 20px;
+	box-shadow: 1px 1px 1px #888888;
+	border-radius : 4px;
+}
+.stocknameSelected{
+	padding-top: 11px;
+	padding-right: 10px;
+	width: 12%;
+	text-align: right;
+	background-color: #80d242;
+	border: 1px solid #d0d0d0;
+	font-size: 20px;
+	box-shadow: 1px 1px 1px #888888;
+	border-radius : 4px;
+}
+.stockvalue{
+	width: 15%;
+	border: 1px solid #d0d0d0;
+	box-shadow: 1px 1px 1px #888888;
+	border-radius : 4px;
+}
+.emptycell{
+	width: 4%;
+}
+.btn{
+	border: 1px solid #e0e0e0;
+	background: #d0d0d0;
+	font-size: 14px;
+	border-radius : 4px;
+	box-shadow: 2px 2px 2px #888888;
+	font-weight: bold;
+}
+.txt{
+	border: 1px solid #e0e0e0;
+	background: #f0f0f0;
+	font-size: 14px;
+	border-radius : 4px;
+	box-shadow: 1px 1px 1px #888888;
+	padding-left: 3px;
+}
+.refreshing{
+	font-size: 14px;
+	color: #D35400;
+}
+.titletxt{
+	font-size: 34px;
+	font-weight: bold;
+	color: blue;
+}
+</style>
+</head>
+<body onload="loadStocks()">
+<table id="tblProcess" width="100%" style="border-bottom: 1px solid #d0d0d0; padding-bottom: 5px;">
+	<tr>
+		<td width="20%" class="titletxt" align="left">BSE</td>
+		
+		
+		<td width="55%" align="right">
+			Interval(sec): <input type="text" id="txtInterval" size="2" value="10" class="txt"/>
+			&nbsp;&nbsp;
+			<input id="btnStart" class="btn" type="button" value="Start" onclick="reloadValues();"/>
+			&nbsp;&nbsp;
+			<input id="btnStop" class="btn" type="button" value="Stop" onclick="stopReload();"/></td>
+		<td width="15%" class="refreshing" id="tdRefreshId"></td>
+		<td width="10%" align="right">
+			<input id="btnRefreshAll" class="btn" type="button" value="Refresh All" onclick="javascript:location.reload();"/>
+		</td>
+	</tr>
+</table>
+<br/>
+<table id="tblStocks" width="100%" style="border: 0px solid #000000;">
+</table>
+</body>
+</html>
